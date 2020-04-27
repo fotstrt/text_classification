@@ -15,3 +15,6 @@ Note that the cooc.py script takes a few minutes to run, and displays the number
 
 ### To connect to the Leonhard cluster:
 ssh username@login.leonhard.ethz.ch
+
+### To download data:
+http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip

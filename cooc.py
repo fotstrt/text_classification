@@ -8,10 +8,11 @@ def main():
     with open('vocab.pkl', 'rb') as f:
         vocab = pickle.load(f)
     vocab_size = len(vocab)
+    print(vocab_size)
 
     data, row, col = [], [], []
     counter = 1
-    for fn in ['train_pos.txt', 'train_neg.txt']:
+    for fn in ['data/train_pos.txt', 'data/train_neg.txt']:
         with open(fn) as f:
             for line in f:
                 tokens = [vocab.get(t, -1) for t in line.strip().split()]
@@ -21,7 +22,6 @@ def main():
                         data.append(1)
                         row.append(t)
                         col.append(t2)
-
                 if counter % 10000 == 0:
                     print(counter)
                 counter += 1
