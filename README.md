@@ -8,13 +8,18 @@ in the correct locations)
 
 Note that the cooc.py script takes a few minutes to run, and displays the number of tweets processed.
 
-- build_vocab.sh
-- cut_vocab.sh
-- python3 pickle_vocab.py
-- python3 cooc.py
+- `build_vocab.sh`
+- `cut_vocab.sh`
+- `python3 pickle_vocab.py`
+- `python3 cooc.py`
 
 ### To connect to the Leonhard cluster:
-ssh username@login.leonhard.ethz.ch
+`ssh username@login.leonhard.ethz.ch`
+
+### To run on GPU
+`module load python_gpu/3.6.1 hdf5/1.10.1`
+
+`bsub -I -R "rusage[mem=4096, ngpus_excl_p=1]" "python code/lstm.py"`
 
 ### To download data:
 http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip
