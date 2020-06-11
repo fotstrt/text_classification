@@ -23,3 +23,13 @@ Note that the cooc.py script takes a few minutes to run, and displays the number
 
 ### To download data:
 http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip
+
+### To preprocess:
+from src/ folder:
+
+    python convert.py  --> creates 2 files to csv_data
+
+    python preprocess.py 'path-to-csv-data' 0/1 (0: training data preprocessing, 1: test data preprocessing
+
+    python stats.py 'path to train-processed-data'
+
