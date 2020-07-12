@@ -8,6 +8,13 @@ from sklearn.model_selection import train_test_split
 import pickle
 import numpy as np
 import random
+import pandas as pd
+
+TRAIN_FILE = "../../csv_data/train_data-processed.csv"
+TRAIN_FILE_FULL = "../csv_data/train_data_full-processed.csv"
+TEST_FILE = "../../csv_data/test_data-processed.csv"
+EMB_FILE = "embeddings.pickle"
+WORD_INDEX = "word_index.txt"
 
 # randomly shuffle x, y lists
 def shuffle_lists(X, y):
@@ -122,11 +129,11 @@ def segmentate_data(x_data, y_data):
 def get_data(vocab_size, step):
     
     # load embeddings
-    with open('embeddings.pickle', 'rb') as f:
+    with open(EMB_FILE, 'rb') as f:
         embeddings = pickle.load(f)
 
     # read word index
-    with open('word_index.txt', 'r') as f:
+    with open(WORD_INDEX, 'r') as f:
         lines = f.readlines()
 
     word_index = dict()
@@ -136,7 +143,7 @@ def get_data(vocab_size, step):
 
     if step == 'test':
 
-        with open('test_data_proc.txt', 'r') as f:
+        with open(TEST_FILE, 'r') as f:
             data = f.readlines()
 
         X = list()
@@ -148,9 +155,10 @@ def get_data(vocab_size, step):
     else:
 
         # read train dataset
-        with open('final_dataset.txt', 'r') as f:
-            data = f.readlines()
+        #with open(TRAIN_FILE, 'r') as f:
+        #    data = f.readlines()
 
+        '''
         X = list()
         y = list()
 
@@ -160,18 +168,33 @@ def get_data(vocab_size, step):
             value = [0, 0]
             value[int(dato[-1])] = 1
             y.append(value)
-
+        '''
         #X, y = shuffle_lists(X, y)
         
         #X = X[:10000]
         #y = y[:10000]
         
+          
+        data = pd.read_csv(TRAIN_FILE, header=None,  index_col=0)
+        data.columns=["Label", "Sentence"]
+        data = data.dropna()
+
+        X = data["Sentence"].tolist()
+        labels = data["Label"].tolist()
+        y = list()
+
+        for l in labels: # 0 or 1
+            value = [0,0]
+            value[l] = 1
+            y.append(value)
+
         X_train, X_val, y_train, y_val = \
-            train_test_split(X, y, test_size=0.02, random_state=42)
+            train_test_split(X, y, test_size=0.01, random_state=42)
         
         train_data = segmentate_data(X_train, y_train)
         val_data = segmentate_data(X_val, y_val)
 
+        
         final_data = train_data, val_data
 
     return final_data, embeddings, word_index, 
@@ -260,6 +283,8 @@ def train_model(model, train_data, val_data, word_index, batch_size, epochs=100,
                 gradients = tape.gradient(loss, model.trainable_variables)
                 optimizer.apply_gradients(zip(gradients, model.trainable_variables))
                 train_loss(loss)
+
+                #print(predictions)
 
                 predictions = np.argmax(predictions, axis=1)
                 batch_y = np.argmax(batch_y, axis=1)
@@ -364,8 +389,11 @@ def predict_model(model, predict_data, predict_indices, word_index, batch_size):
 
 if __name__ == '__main__':
 
+
+    print("GPU: ", tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None))
+
     # possible steps: train, test, tune
-    step = 'test'
+    step = 'train'
 
     # vocab size max = 100000
     vocab_size = 100000
@@ -378,12 +406,16 @@ if __name__ == '__main__':
     
     data, embeddings, word_index = get_data(vocab_size, step)
 
+    print("After getting data")
+
 
     if step == 'train':
         model = create_model(embeddings, hparams, vocab_size)
         model.summary()
         #model.load_weights('sentiment_model_init.h5')
         train_data, val_data = data
+
+        print("ready to train")
         train_model(model, train_data, val_data, word_index, batch_size, epochs=100, learning_rate=0.001)
     elif step == 'test':
         test_data, test_indices = data

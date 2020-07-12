@@ -3,11 +3,16 @@ from collections import Counter
 import pickle
 import numpy as np
 import re
+import pandas as pd
 
 pos_path = '/path_to_pos_path/train_pos_full.txt'
 neg_path = '/path_to_neg_pathtrain_neg_full.txt'
-glove_path = '/path_to_glove_file/glove.42B.300d.txt'
+glove_path = 'glove.42B.300d.txt'
 test_path = '/path_to_test_path/test_data.txt'
+
+TRAIN_FILE = '../../csv_data/train_data-processed.csv'
+TRAIN_FILE_FULL = '../../csv_data/train_data_full-processed.csv'
+
 
 vocab_size = 100000
 emb_size = 300
@@ -50,6 +55,7 @@ def preprocess_sentence(sentence):
 # ---- preprocess test data --------
 # ---- save to test_data_proc.txt --
 
+'''
 with open(test_path, 'r') as f:
     lines = f.readlines()
 
@@ -66,13 +72,14 @@ with open('test_data_proc.txt', 'w') as f:
         sen = sen.strip()
         print(sen, file=f)
 
-
+'''
 # ---- proprocess train data ------------
 # ---- save to final_dataset.txt --------
 
 labels = list()
 tweets = list()
 
+'''
 for label, f_path in enumerate([neg_path, pos_path]):
 
     with open(f_path, 'r') as f:
@@ -92,6 +99,15 @@ with open('final_dataset.txt', 'w') as f:
         tweet = ' '.join(tweet)
         print_line = '{} {}'.format(tweet, label)
         print(print_line, file=f)
+'''
+
+data = pd.read_csv(TRAIN_FILE, header=None,  index_col=0)
+data.columns=["Label", "Sentence"]
+
+data = data.dropna()
+
+labels = data['Label'].tolist()
+tweets = data['Sentence'].tolist()
 
 
 # ----------- create word_index file ------------
@@ -100,7 +116,8 @@ with open('final_dataset.txt', 'w') as f:
 
 word_list = list()
 for tweet in tweets:
-    for word in tweet:
+    tweet_list = tweet.split()
+    for word in tweet_list:
         word_list.append(word)
 
 word_freq_list = Counter(word_list).most_common(vocab_size - 2)
@@ -117,6 +134,8 @@ for word, _ in word_freq_list:
         word_index[word] = len(word_index)
 
 
+print("1) create embeddings index")
+
 embeddings_index = {}
 f = open(glove_path, encoding='utf8')
 for line in f:
@@ -125,6 +144,8 @@ for line in f:
     coefs = np.asarray(values[1:], dtype='float32')
     embeddings_index[word] = coefs
 f.close()
+
+print("2) create embeddings matrix")
 
 glove_embedding_matrix = np.zeros((vocab_size, emb_size))
 for word, i in word_index.items():
@@ -140,6 +161,9 @@ for word, i in word_index.items():
 
 #with open("word_index.pickle", "wb") as f:
 #    pickle.dump(word_index, f)
+
+
+print("3) save")
 
 with open('word_index.txt', 'w') as f:
     for k, v in word_index.items():
