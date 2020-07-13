@@ -179,8 +179,14 @@ def get_data(vocab_size, step):
         data.columns=["Label", "Sentence"]
         data = data.dropna()
 
-        X = data["Sentence"].tolist()
-        labels = data["Label"].tolist()
+
+        X = list()
+        labels = list()
+        for index,row in data.iterrows():
+          s = row["Sentence"].split()
+          X.append(s)
+          labels.append(row["Label"])
+        
         y = list()
 
         for l in labels: # 0 or 1
@@ -188,13 +194,21 @@ def get_data(vocab_size, step):
             value[l] = 1
             y.append(value)
 
+        #print(X)
+
+        print("------------------------------------------------------------------------")
+
+
+        #print(y)
+
         X_train, X_val, y_train, y_val = \
             train_test_split(X, y, test_size=0.01, random_state=42)
         
         train_data = segmentate_data(X_train, y_train)
         val_data = segmentate_data(X_val, y_val)
 
-        
+        print(train_data)
+
         final_data = train_data, val_data
 
     return final_data, embeddings, word_index, 
@@ -391,7 +405,20 @@ if __name__ == '__main__':
 
 
     print("GPU: ", tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None))
+    print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 
+
+    '''
+    import tensorflow as tf
+    with tf.device('/gpu:0'):
+      a = tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape=[2, 3], name='a')
+      b = tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape=[3, 2], name='b')
+      c = tf.matmul(a, b)
+    with tf.Session() as sess:
+      print (sess.run(c))
+    '''
+
+    
     # possible steps: train, test, tune
     step = 'train'
 
