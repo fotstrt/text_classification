@@ -1,17 +1,43 @@
 # text_classification
 Text Sentiment Classification based on tweets
 
-## Build the Co-occurence Matrix
+## Baseline Implementations
 
-To build a co-occurence matrix, run the following commands.  (Remember to put the data files
-in the correct locations)
+In the root directory: (remember to change the name of files and put the data files
+in the correct locations!!!)
+
+'mkdir interm_data'
+'mkdir final_data'
+
+To build a co-occurence matrix, run the following commands:
 
 Note that the cooc.py script takes a few minutes to run, and displays the number of tweets processed.
 
-- `build_vocab.sh`
-- `cut_vocab.sh`
-- `python3 pickle_vocab.py`
-- `python3 cooc.py`
+- `./infrastructure/build_vocab.sh`
+- `./infrastructure/cut_vocab.sh`
+- `python3 ./infrastructure/pickle_vocab.py`
+- `python3 ./infrastructure/cooc.py`
+
+(Not mandatory) For preprocessing:
+-`python3 ./infrastructure/preprocess_new.py 'path-to-txt-data' 0/1 (for each data file seperately, 0: training data preprocessing, 1: test data preprocessing)`
+
+(Not mandatory) For removing duplicates: 
+-`python3 ./infrastructure/deduplication.py`
+
+For manually computing GloVe embeddings: (change number of dimensions)
+-`python3 ./infrastructure/glove_compute.py`
+
+(Not mandatory) For pretrained GloVe embeddings: (needs previous manual computation of embeddings)
+-'python3 ./infrastructure/glove_pretrained.py'
+
+For computing tweet embeddings:
+- `python3 ./infrastructure/infrastructure.py` (for manual embeddings)
+- `python3 ./infrastructure/infrastructure_pretrained.py` (for pretrained embeddings)
+
+For classification task:
+-`python3 ./implementations/svm.py`
+-`python3 ./implementations/xgboost_impl.py`
+-`python3 ./implementations/logistic.py`
 
 ### To connect to the Leonhard cluster:
 `ssh username@login.leonhard.ethz.ch`
