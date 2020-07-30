@@ -20,19 +20,19 @@ Note that the cooc.py script takes a few minutes to run, and displays the number
 
 (Not mandatory) For preprocessing:
 
--`python3 ./infrastructure/preprocess_new.py 'path-to-txt-data' 0/1 (for each data file seperately, 0: training data preprocessing, 1: test data preprocessing)`
+- `python3 ./infrastructure/preprocess_new.py 'path-to-txt-data' 0/1 (for each data file seperately, 0: training data preprocessing, 1: test data preprocessing)`
 
 (Not mandatory) For removing duplicates: 
 
--`python3 ./infrastructure/deduplication.py`
+- `python3 ./infrastructure/deduplication.py`
 
 For manually computing GloVe embeddings: (change number of dimensions)
 
--`python3 ./infrastructure/glove_compute.py`
+- `python3 ./infrastructure/glove_compute.py`
 
 (Not mandatory) For pretrained GloVe embeddings: (needs previous manual computation of embeddings)
 
--`python3 ./infrastructure/glove_pretrained.py`
+- `python3 ./infrastructure/glove_pretrained.py`
 
 For computing tweet embeddings:
 
@@ -41,9 +41,9 @@ For computing tweet embeddings:
 
 For classification task:
 
--`python3 ./implementations/svm.py`
--`python3 ./implementations/xgboost_impl.py`
--`python3 ./implementations/logistic.py`
+- `python3 ./implementations/svm.py`
+- `python3 ./implementations/xgboost_impl.py`
+- `python3 ./implementations/logistic.py`
 
 ### To connect to the Leonhard cluster:
 `ssh username@login.leonhard.ethz.ch`
