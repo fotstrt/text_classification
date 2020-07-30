@@ -8,10 +8,10 @@ in the correct locations!!!)
 
 
 - `mkdir data`
-- `In /data wget dataset from http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip`
-- `In /data wget Twitter pretrained embeddings from https://nlp.stanford.edu/projects/glove/`
-- 'mkdir interm_data'
-- 'mkdir final_data'
+- `in /data wget dataset from http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip`
+- `in /data wget Twitter pretrained embeddings from https://nlp.stanford.edu/projects/glove/`
+- `mkdir interm_data`
+- `mkdir final_data`
 
 To build a co-occurence matrix, run the following commands:
 
