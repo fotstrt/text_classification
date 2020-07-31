@@ -1,15 +1,14 @@
-# text_classification
-Text Sentiment Classification based on tweets
+# Applying Ensembling Methods for Sentiment Classification of Tweets
 
 ## Baseline Implementations
 
-In the root directory: (Remember to change the name of files and put the data files
-in the correct locations!!!)
+The baseline models can be found in the `implementations/baselines` folder.
 
-
+To download the essential data for this project:
 - `mkdir data`
-- `in /data wget dataset from http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip`
-- `in /data wget Twitter pretrained embeddings from https://nlp.stanford.edu/projects/glove/`
+- `cd data`
+- `wget http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip` (to download dataset)
+- `wget` Twitter pretrained embeddings from https://nlp.stanford.edu/projects/glove/
 - `mkdir interm_data`
 - `mkdir final_data`
 
@@ -24,7 +23,7 @@ Note that the cooc.py script takes a few minutes to run, and displays the number
 
 (Not mandatory) For preprocessing:
 
-- `python3 ./infrastructure/preprocess_new.py 'path-to-txt-data' 0/1 (for each data file seperately, 0: training data preprocessing, 1: test data preprocessing)`
+- `python3 ./preprocessing/preprocess_baselines.py 'path-to-txt-data' 0/1 (for each data file seperately, 0: training data preprocessing, 1: test data preprocessing)`
 
 (Not mandatory) For removing duplicates:
 
@@ -45,9 +44,9 @@ For computing tweet embeddings:
 
 For classification task:
 
-- `python3 ./implementations/svm.py`
-- `python3 ./implementations/xgboost_impl.py`
-- `python3 ./implementations/logistic.py`
+- `python3 ./implementations/baselines/svm.py`
+- `python3 ./implementations/baselines/xgboost_impl.py`
+- `python3 ./implementations/baselines/logistic.py`
 
 ### To connect to the Leonhard cluster:
 `ssh username@login.leonhard.ethz.ch`

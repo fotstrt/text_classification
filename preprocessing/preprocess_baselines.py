@@ -1,43 +1,8 @@
 import re
 import sys
 from utils import write_status
-#from nltk.stem.porter import PorterStemmer
 import pandas as pd
-#from nltk.corpus import stopwords
-# import enchant
 
-# import nltk
-# nltk.download('words')
-# from nltk.corpus import words, brown
-
-# word_dictionary = list(set(words.words()))
-# word_dictionary += ["african", "nationals", "life", "completed"]
-
-# for alphabet in "bcdefghjklmnopqrstuvwxyz":
-#     word_dictionary.remove(alphabet)
-'''
-dico = {}
-dico1 = open('dicos/dico1.txt', 'rb')
-for word in dico1:
-    word = word.decode('utf8')
-    word = word.split()
-    dico[word[1]] = word[3]
-dico1.close()
-dico2 = open('dicos/dico2.txt', 'rb')
-for word in dico2:
-    word = word.decode('utf8')
-    word = word.split()
-    dico[word[0]] = word[1]
-dico2.close()
-dico3 = open('dicos/dico2.txt', 'rb')
-for word in dico3:
-    word = word.decode('utf8')
-    word = word.split()
-    dico[word[0]] = word[1]
-dico3.close()
-
-d = enchant.Dict('en_US')
-'''
 our_stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'his', 'him' 'himself',
                    'she', 'her', 'hers', 'herself',  'it', 'its', 'itself', 'they', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom',
                    'this', 'that', 'those', 'these', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do',
@@ -61,50 +26,6 @@ contraction_dict = {"aint": "is not", "arent": "are not","cant": "cannot", "'cau
        "that'd": "that would", "that'd've": "that would have", "that's": "that is", "there'd": "there would", "there'd've": "there would have", "there's": "there is", "here's": "here is","they'd": "they would", "they'd've": "they would have", "they'll": "they will", "they'll've": "they will have", "they're": "they are", "they've": "they have", "to've": "to have", "wasn't": "was not", "we'd": "we would", "we'd've": "we would have", "we'll": "we will", "we'll've": "we will have", "we're": "we are", "we've": "we have", "weren't": "were not", "what'll": "what will", "what'll've": "what will have", "what're": "what are",  "what's": "what is",
        "what've": "what have", "when's": "when is", "when've": "when have", "where'd": "where did", "where's": "where is", "where've": "where have", "who'll": "who will", "who'll've": "who will have", "who's": "who is", "who've": "who have", "why's": "why is", "why've": "why have", "will've": "will have", "won't": "will not", "won't've": "will not have", "would've": "would have", "wouldn't": "would not", "wouldn't've": "would not have", "y'all": "you all", "y'all'd": "you all would","y'all'd've": "you all would have","y'all're": "you all are","y'all've": "you all have","you'd": "you would", "you'd've": "you would have", "you'll": "you will",
        "you'll've": "you will have", "you're": "you are", "you've": "you have"}
-
-
-'''
-def _get_contractions(contraction_dict):
-        contraction_re = re.compile('(%s)' % '|'.join(contraction_dict.keys()))
-        return contraction_dict, contraction_re
-
-
-def replace_contractions(text):
-    contractions, contractions_re = _get_contractions(contraction_dict)
-    def replace(match):
-        return contractions[match.group(0)]
-    return contractions_re.sub(replace, text)
-
-
-def split_hashtag_to_words_all_possibilities(hashtag):
-    all_possibilities = []
-
-    #print(hashtag)
-    split_posibility = [hashtag[:i] in word_dictionary for i in reversed(range(len(hashtag)+1))]
-    possible_split_positions = [i for i, x in enumerate(split_posibility) if x == True]
-
-    for split_pos in possible_split_positions[:1]:
-        split_words = []
-        word_1, word_2 = hashtag[:len(hashtag)-split_pos], hashtag[len(hashtag)-split_pos:]
-        #print(word_1, word_2)
-
-        if word_2 in word_dictionary:
-            split_words.append(word_1)
-            split_words.append(word_2)
-            all_possibilities.append(split_words)
-
-            another_round = split_hashtag_to_words_all_possibilities(word_2)
-
-            if len(another_round) > 0:
-                all_possibilities = all_possibilities + [[a1] + a2 for a1, a2, in zip([word_1]*len(another_round), another_round)]
-        else:
-            another_round = split_hashtag_to_words_all_possibilities(word_2)
-
-            if len(another_round) > 0:
-                all_possibilities = all_possibilities + [[a1] + a2 for a1, a2, in zip([word_1]*len(another_round), another_round)]
-
-    return all_possibilities
-'''
 
 def clean_numbers(x):
     if bool(re.search(r'\d', x)):
@@ -131,16 +52,12 @@ def is_valid_word(word):
 def preprocess_word(word):
     # Remove punctuation
     word = word.strip('\'"?!,.():;')
-    # Convert more than 2 letter repetitions to 2 letter
-    # funnnnny --> funny
-    #word = re.sub(r'(.)\1+', r'\1\1', word)
     # Remove - & '
     word = re.sub(r'(-|\')', '', word)
     return word
 
 def handle_emojis(tweet):
     # Smile -- :), : ), :-), (:, ( :, (-:, :')
-    #tweet = re.sub(r'(:\s?\)|:-\)|\(\s?:|\(-:|:\'\))', ' <happyface> ', tweet)
     tweet = re.sub(r'(:\s?(\)\s?)+|:-(\)\s?)+|(\(\s?)+:|(\(\s?)+-:|:\'+(\)\s?)+|=(\)\s?)+)', ' <happyfaceone> ', tweet)
     # Laugh -- :D, : D, :-D, xD, x-D, XD, X-D, xd
     tweet = re.sub(r'(:\s?(d\s?)+\s|:-(d\s?)+\s|x(\s?-?\s?)+(d\s?)+)\s', ' <happyfacetwo> ', tweet)
@@ -149,33 +66,17 @@ def handle_emojis(tweet):
     # Love -- <3, :*
     tweet = re.sub(r'(<(3\s?)+\s?|:(\*\s?)+\s)', ' <heart> ', tweet)
     # Wink -- ;-), ;), ;-D, ;D, (;,  (-;
-    #tweet = re.sub(r'(;-?\)|;-?D|\(-?;)', ' <wink> ', tweet)
     tweet = re.sub(r'(;(\s?-?\s?)+(\)\s?)+|;(\s?-?\s?)+(d\s?)+\s|(\(\s?)+(\s?-?\s?)+;)', ' <wink> ', tweet)
     # Sad -- :-(, : (, :(, ):, )-:
-    #tweet = re.sub(r'(:\s?\(|:-\(|\)\s?:|\)-:)', ' <sadface> ', tweet)
     tweet = re.sub(r'(:\s?(\(\s?)+|:-(\(\s?)+|(\)\s?)+:|(\)\s?)+-:|:\s?(\\\s?)+|:\s?(/\s?)+)', ' <sadface> ', tweet)
     # Cry -- :,(, :'(, :"(
     tweet = re.sub(r'(:,(\(\s?)+|:\'(\(\s?)+|:"(\(\s?)+)', ' <cryface> ', tweet)
     return tweet
 
-'''
-def correct_spell(tweet):
-    """
-    Function that uses the three dictionaries that we described above and replace noisy words
-    Arguments: tweet (the tweet)
-    """
-    tweet = tweet.split()
-    for i in range(len(tweet)):
-        if tweet[i] in dico.keys():
-            tweet[i] = dico[tweet[i]]
-    tweet = ' '.join(tweet)
-    return tweet
-'''
-
 ######### remove unicodes #########
 def removeUnicode(text):
     """ Removes unicode strings like "\u002c" and "x96" """
-    text = re.sub(r'(\\u[0-9A-Fa-f]+)',r'', text)       
+    text = re.sub(r'(\\u[0-9A-Fa-f]+)',r'', text)
     text = re.sub(r'[^\x00-\x7f]',r'',text)
     text = re.sub(r'x([00-96])+',r'',text)
     return text
@@ -188,7 +89,7 @@ def replaceSlang(tweet, slang_dict):
         if word in slang_dict:
             word = slang_dict[word]
         processed_tweet.append(word)
-    
+
     tweet = ' '.join(processed_tweet)
 
     return tweet
@@ -215,8 +116,6 @@ def preprocess_tweet(tweet, slang_dict):
 
     tweet = removeUnicode(tweet)
 
-    #tweet = replaceSlang(tweet, slang_dict)
-
     # Replace multiple spaces with a single space
     tweet = re.sub(r'\s+', ' ', tweet)
 
@@ -228,12 +127,6 @@ def preprocess_tweet(tweet, slang_dict):
         else:
             word = clean_numbers(word)
             word = preprocess_word(word)
-            #new_word = ''.join([i for i in word if i != '#'])
-            #if new_word != word:
-            #    print (word, new_word)
-            #word = new_word
-            #if (is_valid_word(word)):
-                #processed_tweet.append(word)
             processed_tweet.append(word)
 
     tweet = ' '.join(processed_tweet)
@@ -246,8 +139,6 @@ def preprocess_csv(csv_file_name, processed_file_name, test_file):
     with open('./infrastructure/slang.txt') as file:
          slang_dict = dict(map(str.strip, line.partition('\t')[::2]) for line in file if line.strip())
 
-    #print('slang_map:', slang_dict)
-    
     save_to_file = open(processed_file_name, 'w')
 
     with open(csv_file_name, 'r', encoding='utf-8') as csv:
@@ -268,7 +159,7 @@ def preprocess_csv(csv_file_name, processed_file_name, test_file):
     save_to_file.close()
     print ('\nSaved processed tweets to: %s' % processed_file_name)
     return processed_file_name
-    
+
 
 def find_max_length(file):
     data = pd.read_csv(file, header=None,  index_col=0)
@@ -294,5 +185,3 @@ if __name__ == '__main__':
     csv_file_name = sys.argv[1]
     processed_file_name = sys.argv[1][:-4] + '_preprocessed_1.txt'
     preprocess_csv(csv_file_name, processed_file_name, int(sys.argv[2]))
-
-    #find_max_length(sys.argv[1])

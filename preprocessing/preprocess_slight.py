@@ -4,40 +4,7 @@ from utils import write_status
 from nltk.stem.porter import PorterStemmer
 import pandas as pd
 from nltk.corpus import stopwords
-# import enchant
 
-# import nltk
-# nltk.download('words')
-# from nltk.corpus import words, brown
-
-# word_dictionary = list(set(words.words()))
-# word_dictionary += ["african", "nationals", "life", "completed"]
-
-# for alphabet in "bcdefghjklmnopqrstuvwxyz":
-#     word_dictionary.remove(alphabet)
-'''
-dico = {}
-dico1 = open('dicos/dico1.txt', 'rb')
-for word in dico1:
-    word = word.decode('utf8')
-    word = word.split()
-    dico[word[1]] = word[3]
-dico1.close()
-dico2 = open('dicos/dico2.txt', 'rb')
-for word in dico2:
-    word = word.decode('utf8')
-    word = word.split()
-    dico[word[0]] = word[1]
-dico2.close()
-dico3 = open('dicos/dico2.txt', 'rb')
-for word in dico3:
-    word = word.decode('utf8')
-    word = word.split()
-    dico[word[0]] = word[1]
-dico3.close()
-
-d = enchant.Dict('en_US')
-'''
 our_stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'his', 'him', 'himself',
                    'she', 'her', 'hers', 'herself',  'it', 'its', 'itself', 'they', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom',
                    'this', 'that', 'those', 'these', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do',
@@ -45,15 +12,9 @@ our_stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'y
                     'will', 'other', 'each', 'both', 'any', 'all', 'how', 'why', 'where', 'when', 'then', 'here', 'once', 'again', 'further']
 
 def preprocess_word(word):
-    # Remove punctuation
+    # Remove minimum punctuation
     word = word.strip('\'",')
-    # Convert more than 2 letter repetitions to 2 letter
-    # funnnnny --> funny
-    # word = re.sub(r'(.)\1+', r'\1\1', word)
-    # Remove - & '
-    # word = re.sub(r'(-|\')', '', word)
     return word
-
 
 
 contraction_dict = {"aint": "is not", "arent": "are not","cant": "cannot", "'cause": "because", "couldve": "could have", "couldnt": "could not",
@@ -90,14 +51,12 @@ def replace_contractions(text):
 def split_hashtag_to_words_all_possibilities(hashtag):
     all_possibilities = []
 
-    #print(hashtag)
     split_posibility = [hashtag[:i] in word_dictionary for i in reversed(range(len(hashtag)+1))]
     possible_split_positions = [i for i, x in enumerate(split_posibility) if x == True]
 
     for split_pos in possible_split_positions[:1]:
         split_words = []
         word_1, word_2 = hashtag[:len(hashtag)-split_pos], hashtag[len(hashtag)-split_pos:]
-        #print(word_1, word_2)
 
         if word_2 in word_dictionary:
             split_words.append(word_1)
@@ -120,8 +79,6 @@ def split_hashtag_to_words_all_possibilities(hashtag):
 def is_valid_word(word):
     # Check if word begins with an alphabet
     if ((re.search(r'^[a-zA-Z][a-z0-9A-Z\._]*$', word) is not None)):
-        # if (word in stopwords.words('english')):
-        #     return False
         if ("xx" in word or word=="x" or word=="xo"):
             return False
         else:
@@ -161,7 +118,7 @@ def correct_spell(tweet):
 ######### remove unicodes #########
 def removeUnicode(text):
     """ Removes unicode strings like "\u002c" and "x96" """
-    text = re.sub(r'(\\u[0-9A-Fa-f]+)',r'', text)       
+    text = re.sub(r'(\\u[0-9A-Fa-f]+)',r'', text)
     text = re.sub(r'[^\x00-\x7f]',r'',text)
     text = re.sub(r'x([00-96])+',r'',text)
     return text
@@ -174,7 +131,7 @@ def replaceSlang(tweet, slang_dict):
         if word in slang_dict:
             word = slang_dict[word]
         processed_tweet.append(word)
-    
+
     tweet = ' '.join(processed_tweet)
 
     return tweet
@@ -182,27 +139,7 @@ def replaceSlang(tweet, slang_dict):
 
 def preprocess_tweet(tweet):
     processed_tweet = []
-    # Convert to lower case
-    # tweet = tweet.lower()
-    # Replaces URLs with the word URL
-    # tweet = re.sub(r'((www\.[\S]+)|(https?://[\S]+))', ' URL ', tweet)
-    # Replace @handle with the word USER_MENTION
-    # tweet = re.sub(r'@[\S]+', 'USER_MENTION', tweet)
-    # Replaces #hashtag with hashtag
-    # tweet = re.sub(r'#(\S+)', r' \1 ', tweet)
-    # Remove RT (retweet)
-    # tweet = re.sub(r'\brt\b', '', tweet)
-    # Replace 2+ dots with space
-    # tweet = re.sub(r'\.{2,}', ' ', tweet)
-    # Strip space, " and ' from tweet
     tweet = tweet.strip(' "\'')
-    # Replace emojis with either EMO_POS or EMO_NEG
-    # tweet = handle_emojis(tweet)
-    # Replace multiple spaces with a single space
-    # tweet = re.sub(r'\s+', ' ', tweet)
-    # tweet = removeUnicode(tweet)
-    # tweet = replaceSlang(tweet, slang_dict)
-
 
     words = tweet.split()
     for word in words:
@@ -211,7 +148,7 @@ def preprocess_tweet(tweet):
         word=new_word
         processed_tweet.append(word)
     tweet = ' '.join(processed_tweet)
-    
+
     return tweet
 
 def preprocess_csv(csv_file_name, processed_file_name, test_file):
@@ -269,4 +206,3 @@ if __name__ == '__main__':
         porter_stemmer = PorterStemmer()
         processed_file_name = sys.argv[1][:-4] + '-processed-stemmed.csv'
     preprocess_csv(csv_file_name, processed_file_name, int(sys.argv[2]))
-    #find_max_length(sys.argv[1])
