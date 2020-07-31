@@ -1,5 +1,19 @@
 # Applying Ensembling Methods for Sentiment Classification of Tweets
 
+## Datasets creation
+
+### To download data:
+- `wget http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip`
+
+### To prepare datasets:
+
+- `python3 infrastructure/convert.py` prepares the train and test datasets merging positive and negative tweets with the appropriate labels (1: positive tweets, 0: negative tweets).
+
+### To preprocess data:
+
+- `python3 preprocessing/preprocess_punctuation.py 'path-to-csv-data' 0/1` (0: training data preprocessing, 1: test data preprocessing
+
+
 ## Baseline Implementations
 
 The baseline models can be found in the `implementations/baselines` folder.
@@ -48,12 +62,20 @@ For classification task:
 - `python3 ./implementations/baselines/xgboost_impl.py`
 - `python3 ./implementations/baselines/logistic.py`
 
-### To download data:
-http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip
+## LSTM-based models
 
-### To preprocess:
-from `preprocessing` folder:
+## BERT-based models
 
-    - `python3 convert.py` -> creates 2 files to csv_data
+The implementations regarding to **BERT** are contained in the `implementations/bert` folder. There can be found the code scripts for:
 
-    - `python3 preprocess_punctuation.py 'path-to-csv-data' 0/1` (0: training data preprocessing, 1: test data preprocessing
+1. A pretrained **BERT** model in `bert.py`
+1. A pretrained **BERT** model using hugging faces in `bert.py`
+
+## Ensembling methods
+
+We used two ensembling methods in order to optimize our final model:
+
+1. Linear regression
+1. XGBoost
+
+The respective implementations can be found in `implementations/ensembling` folder.

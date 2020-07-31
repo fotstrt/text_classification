@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 
-input_path = "../data/"
-output_path = "../data/"
+input_path = "../csv_data/"
+output_path = "../csv_data/"
 
 
 # the format of the train data should be: tweet_id,sentiment,tweet
@@ -19,10 +19,6 @@ with open(output_path+"train_data.csv", "w", encoding="utf-8") as fw:
         while line:
             new_line = str(it) + ",1," + '"' + line[:-1] + '"' + "\n"
             fw.writelines(new_line)
-            #line_2 = fr1.readline()
-            #while line_2 == line: # eliminate same tweets in row
-            #    line_2 = fr1.readline()
-            #line = line_2
             it+=1
 
     with open(input_path+"train_neg_embeddings.csv", "r", encoding="utf-8") as fr2:
@@ -30,10 +26,6 @@ with open(output_path+"train_data.csv", "w", encoding="utf-8") as fw:
         while line:
             new_line = str(it) + ",0," + '"' + line[:-1] + '"' + "\n"
             fw.writelines(new_line)
-            #line_2 = fr2.readline()
-            #while line_2 == line: # eliminate same tweets in row
-            #    line_2 = fr2.readline()
-            #line = line_2
             it+=1
 
 with open(output_path+"test_data.csv", "w", encoding="utf-8") as fw:
