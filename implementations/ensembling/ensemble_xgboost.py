@@ -1,4 +1,3 @@
-# Importing and installing necessary libaries
 import numpy as np
 import pandas as pd
 import ast
@@ -50,12 +49,14 @@ import math
 import pickle
 
 import xgboost as xgb
+from xgboost import XGBClassifier
+
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import make_scorer, accuracy_score
 
 print("starting")
 
-data = pd.read_csv('csv_data/train_data_full-not-processed.csv',
+data = pd.read_csv('../../csv_data/train_data_full-not-processed.csv',
                    index_col = 0,
                    names=["id", "sentiment", "tweet"])
 data = data.dropna()
@@ -317,34 +318,27 @@ for index, row in valSet.iterrows():
 X = []
 X_test = []
 
-for folder in subfolders:  
+for folder in subfolders:
     X_pd = pd.read_csv(folder + "_X_predictions.csv")
-    X_test_pd = pd.read_csv(folder + "_X_test_predictions.csv") 
+    X_test_pd = pd.read_csv(folder + "_X_test_predictions.csv")
 
     X_tmp = [ast.literal_eval(x) for x in X_pd['X']]
     X_test_tmp = [ast.literal_eval(x) for x in X_test_pd['X']]
 
-    X.append(X_tmp) 
+    X.append(X_tmp)
     X_test.append(X_test_tmp)
 
-    
+
     found_labels = list(np.argmax(X_tmp, axis=1))
     # print('found_labels:',found_labels)
     # print('y_val:', y_val)
     print('model:', folder, 'accuracy_score:', accuracy_score(found_labels, y_val))
 
 
-print('len(X):', len(X))
-# print('len(X_test):', len(X_test))
 
-## xgboost
 x_val = np.hstack(X)
-# print(x_train[:10])
-
 x_test = np.hstack(X_test)
-# print(x_test[:10])
 
-from xgboost import XGBClassifier
 
 xgb_clf = xgb.XGBClassifier(n_estimators=1, eta=0.05, max_depth=3).fit(x_val, y_val)
 y_val_pred = xgb_clf.predict(x_val)
@@ -355,7 +349,7 @@ xgb_model = xgb.XGBClassifier(nthread=-1)
 
 parameters = {
         'max_depth': [1, 2, 3, 5, 9],
-        'eta' : [0.01, 0.05, 0.14], 
+        'eta' : [0.01, 0.05, 0.14],
         'n_estimators': [20 ,35, 50, 75, 100]
 }
 
@@ -380,84 +374,5 @@ df = df.replace(0, -1)
 print(df)
 
 out_file = folder + "xgb_ensemble.csv"
-print('writing predictions for test set in', out_file) 
+print('writing predictions for test set in', out_file)
 df.to_csv(out_file, index=False)
-
-print("---------------------- Grid Search AdaBoost ---------------------------------------")
-ada_clf = AdaBoostClassifier().fit(x_val, y_val)
-
-y_val_pred = ada_clf.predict(x_val)
-print("adaboost test accuracy before CV:", accuracy_score(y_val, y_val_pred))
-
-
-parameters = {
-        'learning_rate' : [0.01, 0.1, 0.5, 1], 
-        'n_estimators': [25, 50, 100, 150, 200]
-}
-        
-clf = GridSearchCV(ada_clf, parameters, n_jobs=-1, cv=10, scoring=make_scorer(accuracy_score), verbose=1)
-clf.fit(x_val, y_val)
-
-print("Best estimator adaboost:")
-print(clf.best_estimator_)
-print("Best params adaboost:")
-print(clf.best_params_)
-print("Best score adaboost:")
-print(clf.best_score_)
-
-# print(clf.cv_results_)
-
-new_ada = clf.best_estimator_
-y_val_pred = new_ada.predict(x_val)
-print("cv adaboost train accuracy with best estimator:", accuracy_score(y_val, y_val_pred))
-
-best_test_pred = new_ada.predict(x_test)
-
-idx_list = range(1, len(best_test_pred) + 1)
-df = pd.DataFrame(list(zip(idx_list, best_test_pred)), columns =['Id', 'Prediction'])
-df = df.replace(0, -1)
-print(df)
-
-out_file = folder + "ada_ensemble.csv"
-print('writing predictions for test set in', out_file) 
-df.to_csv(out_file, index=False)
-
-print("---------------------- Grid Search GB ---------------------------------------")
-gb_clf = GradientBoostingClassifier().fit(x_val, y_val)
-
-# y_val_pred = gb_clf.predict(x_val)
-# print("gboost test accuracy before CV:", accuracy_score(y_val, y_val_pred))
-
-
-parameters = {
-        'n_estimators': [10, 15, 20, 25, 30, 70, 100],
-        'max_depth': [2, 3, 4, 6]
-}
-        
-clf = GridSearchCV(gb_clf, parameters, n_jobs=-1, cv=10, scoring=make_scorer(accuracy_score), verbose=1)
-clf.fit(x_val, y_val)
-
-print("Best estimator gboost:")
-print(clf.best_estimator_)
-print("Best params gboost:")
-print(clf.best_params_)
-print("Best score gboost:")
-print(clf.best_score_)
-
-# print(clf.cv_results_)
-
-new_gb = clf.best_estimator_
-y_val_pred = new_gb.predict(x_val)
-print("cv gboost train accuracy with best estimator:", accuracy_score(y_val, y_val_pred))
-
-best_test_pred = new_gb.predict(x_test)
-
-idx_list = range(1, len(best_test_pred) + 1)
-df = pd.DataFrame(list(zip(idx_list, best_test_pred)), columns =['Id', 'Prediction'])
-df = df.replace(0, -1)
-print(df)
-
-out_file = folder + "gb_ensemble.csv"
-print('writing predictions for test set in', out_file) 
-df.to_csv(out_file, index=False)
-

@@ -97,7 +97,7 @@ def convert_example_to_feature(review):
               )
 
 
-input_path = "csv_data/"
+input_path = "../../csv_data/"
 TRAIN_PROCESSED_FILE = input_path + 'train_data-processed_full.csv'
 TEST_PROCESSED_FILE = input_path + 'test_data-processed.csv'
 

@@ -53,7 +53,7 @@ log.addHandler(fh)
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-data = pd.read_csv('csv_data/train_data_full-not-processed.csv',
+data = pd.read_csv('../../csv_data/train_data_full-not-processed.csv',
                    index_col = 0,
                    names=["id", "sentiment", "tweet"])
 data = data.dropna()
