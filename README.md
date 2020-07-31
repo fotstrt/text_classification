@@ -68,8 +68,9 @@ For classification task:
 
 The implementations regarding to **BERT** are contained in the `implementations/bert` folder. There can be found the code scripts for:
 
-1. A pretrained **BERT** model in `bert.py`
-1. A pretrained **BERT** model using hugging faces in `bert.py`
+1. Fine-tuning pretrained **BERT** models in `bert.py`
+1. Fine-tuning pretrained **BERT** models using huggingface library in `bert_huggging_face.py`
+1. Further pretraining the **BERT** model in `retrain/retrain.sh` and fine-tuning the generated model with `retrain/fine_tune.sh`
 
 ## Ensembling methods
 
