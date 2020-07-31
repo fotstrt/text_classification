@@ -1,0 +1,20 @@
+python3 BERT4doc-Classification/codes/fine-tuning/run_classifier_single_layer.py \
+  --task_name imdb \
+  --do_train \
+  --do_eval \
+  --do_predict \
+  --do_lower_case \
+  --data_dir ../../../csv_data/train_data_full-not-processed.csv \
+  --test_data_dir ../../../csv_data/test_data-not-processed.csv \
+  --vocab_file /cluster/scratch/atriantaf/wwm_uncased_L-24_H-1024_A-16/vocab.txt \
+  --bert_config_file /cluster/scratch/atriantaf/wwm_uncased_L-24_H-1024_A-16/bert_config.json \
+  --init_checkpoint ../../../wwm_uncased_L-24_H-1024_A-16_twitter_pretrain-not-processed/pytorch_model.bin \
+  --max_seq_length 64 \
+  --train_batch_size 64 \
+  --eval_batch_size 64 \
+  --learning_rate 2e-5 \
+  --num_train_epochs 4.0 \
+  --output_dir ./retrained_predict_full_4_last_4_epochs_not_preprocessed_pretrained \
+  --seed 42 \
+  --layers 23 22 21 20\
+  --trunc_medium -1
