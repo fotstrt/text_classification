@@ -26,7 +26,7 @@ Note that the cooc.py script takes a few minutes to run, and displays the number
 
 - `python3 ./infrastructure/preprocess_new.py 'path-to-txt-data' 0/1 (for each data file seperately, 0: training data preprocessing, 1: test data preprocessing)`
 
-(Not mandatory) For removing duplicates: 
+(Not mandatory) For removing duplicates:
 
 - `python3 ./infrastructure/deduplication.py`
 
