@@ -154,28 +154,8 @@ def get_data(vocab_size, step):
 
     else:
 
-        # read train dataset
-        #with open(TRAIN_FILE, 'r') as f:
-        #    data = f.readlines()
-
-        '''
-        X = list()
-        y = list()
-
-        for dato in data:
-            dato = dato.strip().split()
-            X.append(dato[:-1])
-            value = [0, 0]
-            value[int(dato[-1])] = 1
-            y.append(value)
-        '''
-        #X, y = shuffle_lists(X, y)
         
-        #X = X[:10000]
-        #y = y[:10000]
-        
-          
-        data = pd.read_csv(TRAIN_FILE, header=None,  index_col=0)
+        data = pd.read_csv(TRAIN_FILE_FULL, header=None,  index_col=0)
         data.columns=["Label", "Sentence"]
         data = data.dropna()
 
@@ -194,15 +174,10 @@ def get_data(vocab_size, step):
             value[l] = 1
             y.append(value)
 
-        #print(X)
-
-        print("------------------------------------------------------------------------")
-
-
-        #print(y)
+        
 
         X_train, X_val, y_train, y_val = \
-            train_test_split(X, y, test_size=0.01, random_state=42)
+            train_test_split(X, y, test_size=0.1, random_state=42)
         
         train_data = segmentate_data(X_train, y_train)
         val_data = segmentate_data(X_val, y_val)
@@ -407,16 +382,6 @@ if __name__ == '__main__':
     print("GPU: ", tf.test.is_gpu_available(cuda_only=False, min_cuda_compute_capability=None))
     print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
 
-
-    '''
-    import tensorflow as tf
-    with tf.device('/gpu:0'):
-      a = tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape=[2, 3], name='a')
-      b = tf.constant([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], shape=[3, 2], name='b')
-      c = tf.matmul(a, b)
-    with tf.Session() as sess:
-      print (sess.run(c))
-    '''
 
     
     # possible steps: train, test, tune

@@ -5,103 +5,19 @@ import numpy as np
 import re
 import pandas as pd
 
-pos_path = '/path_to_pos_path/train_pos_full.txt'
-neg_path = '/path_to_neg_pathtrain_neg_full.txt'
-glove_path = 'glove.42B.300d.txt'
+glove_path = 'glove_tweets/glove.twitter.27B.200d.txt'
 test_path = '/path_to_test_path/test_data.txt'
 
-TRAIN_FILE = '../../csv_data/train_data-processed.csv'
-TRAIN_FILE_FULL = '../../csv_data/train_data_full-processed.csv'
+TRAIN_FILE_FULL = '../../csv_data/train_data_full-punct.csv'
 
-
-vocab_size = 100000
+vocab_size = 500000
 emb_size = 300
 
-def preprocess_sentence(sentence):
-    proc_sentence = sentence.strip()
-    proc_sentence = proc_sentence.lower()
-
-    # remove non ascii
-    proc_sentence = ''.join([i if (ord(i) < 128) else ' ' for i in proc_sentence])
-
-    # replace numbers with 'number'
-    proc_sentence = re.sub("\d+", " number ", proc_sentence)    
-
-    # separate each dot (.)
-    proc_sentence = re.sub("\.", " . ", proc_sentence)
-
-    # remove < >
-    proc_sentence = re.sub("<", " ", proc_sentence)
-    proc_sentence = re.sub(">", " ", proc_sentence)
-
-    # break dashes
-    proc_sentence = re.sub("-", " - ", proc_sentence)
-
-    # split hashtags
-    proc_sentence = re.sub("#", " # ", proc_sentence)  
-
-    # break abbreviations
-    proc_sentence = re.sub("'", " ' ", proc_sentence)
-
-    # replace extra spaces
-    proc_sentence = re.sub(" +", " ", proc_sentence)    
-
-
-    proc_sentence = proc_sentence.split()
-
-    return proc_sentence
-
-
-# ---- preprocess test data --------
-# ---- save to test_data_proc.txt --
-
-'''
-with open(test_path, 'r') as f:
-    lines = f.readlines()
-
-test_sentences = list()
-for line in lines:
-    proc_line = preprocess_sentence(line)
-    test_sentences.append(proc_line)
-
-
-with open('test_data_proc.txt', 'w') as f:
-    for sen in test_sentences:
-        sen = ' '.join(sen)
-        sen = sen[8:]
-        sen = sen.strip()
-        print(sen, file=f)
-
-'''
-# ---- proprocess train data ------------
-# ---- save to final_dataset.txt --------
 
 labels = list()
 tweets = list()
 
-'''
-for label, f_path in enumerate([neg_path, pos_path]):
-
-    with open(f_path, 'r') as f:
-
-        sentences = f.readlines()
-
-    for sen in sentences:
-
-        labels.append(label)
-        tweets.append(preprocess_sentence(sen))
-
-
-
-
-with open('final_dataset.txt', 'w') as f:
-    for label, tweet in zip(labels, tweets):
-        tweet = ' '.join(tweet)
-        print_line = '{} {}'.format(tweet, label)
-        print(print_line, file=f)
-'''
-
-data = pd.read_csv(TRAIN_FILE, header=None,  index_col=0)
+data = pd.read_csv(TRAIN_FILE_FULL, header=None,  index_col=0)
 data.columns=["Label", "Sentence"]
 
 data = data.dropna()
@@ -117,6 +33,7 @@ tweets = data['Sentence'].tolist()
 word_list = list()
 for tweet in tweets:
     tweet_list = tweet.split()
+    #print(tweet_list)
     for word in tweet_list:
         word_list.append(word)
 
@@ -134,7 +51,7 @@ for word, _ in word_freq_list:
         word_index[word] = len(word_index)
 
 
-print("1) create embeddings index")
+print("1) create embeddings index from", glove_path)
 
 embeddings_index = {}
 f = open(glove_path, encoding='utf8')
@@ -145,9 +62,13 @@ for line in f:
     embeddings_index[word] = coefs
 f.close()
 
+
+
 print("2) create embeddings matrix")
 
 glove_embedding_matrix = np.zeros((vocab_size, emb_size))
+
+
 for word, i in word_index.items():
     if i < vocab_size:
         embedding_vector = embeddings_index.get(word)
@@ -157,10 +78,6 @@ for word, i in word_index.items():
             glove_embedding_matrix[i] = embeddings_index.get('unk')
 
     glove_embedding_matrix[0] = np.random.normal(0, 1, emb_size)
-
-
-#with open("word_index.pickle", "wb") as f:
-#    pickle.dump(word_index, f)
 
 
 print("3) save")
