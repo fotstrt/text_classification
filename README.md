@@ -48,23 +48,12 @@ For classification task:
 - `python3 ./implementations/baselines/xgboost_impl.py`
 - `python3 ./implementations/baselines/logistic.py`
 
-### To connect to the Leonhard cluster:
-`ssh username@login.leonhard.ethz.ch`
-
-### To run on GPU
-`module load python_gpu/3.6.1 hdf5/1.10.1`
-
-`bsub -I -R "rusage[mem=4096, ngpus_excl_p=1]" "python code/lstm.py"`
-
 ### To download data:
 http://www.da.inf.ethz.ch/teaching/2018/CIL/material/exercise/twitter-datasets.zip
 
 ### To preprocess:
-from src/ folder:
+from `preprocessing` folder:
 
-    python convert.py  --> creates 2 files to csv_data
+    - `python3 convert.py` -> creates 2 files to csv_data
 
-    python preprocess.py 'path-to-csv-data' 0/1 (0: training data preprocessing, 1: test data preprocessing
-
-    python stats.py 'path to train-processed-data'
-
+    - `python3 preprocess_punctuation.py 'path-to-csv-data' 0/1` (0: training data preprocessing, 1: test data preprocessing
