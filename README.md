@@ -64,6 +64,14 @@ For classification task:
 
 ## LSTM-based models
 
+Our LSTM-based model can be found in the `implementations/lstm` folder.
+
+For generating word indexes and word embeddings:
+- `python3 implementations/lstm/process_data.py`
+
+For training/fine-tuning/testing the model:
+- `python3 implementations/lstm/sentiment.py`
+
 ## BERT-based models
 
 The implementations regarding to **BERT** are contained in the `implementations/bert` folder. There can be found the code scripts for:
@@ -71,6 +79,14 @@ The implementations regarding to **BERT** are contained in the `implementations/
 1. fine-tuning pretrained **BERT** models in `bert.py`.
 1. fine-tuning pretrained **BERT** models using huggingface library in `bert_huggging_face.py`.
 1. further pretraining the **BERT** model in `retrain/retrain.sh` and fine-tuning the generated model with `retrain/fine_tune.sh`.
+
+## RoBERTa-based models
+
+The implementations regarding to **RoBERTa** are contained in the `implementations/robert` folder. There can be found code scripts for:
+
+1. fine-tuning **RoBERTa** base in `roberta_base.py`
+1. fine-tuning **RoBERTa** large in `roberta_large.py`
+1. fine-tuning **RoBERTa** large with an additional BiLSTM layer in `roberta_large_lstm.py`
 
 ## Ensembling methods
 
